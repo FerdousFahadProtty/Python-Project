@@ -1,0 +1,80 @@
+import tkinter as tk
+from tkinter import font
+
+def checkWin():
+    g00 = gameMatrix[0][0].cget('text')
+    g01 = gameMatrix[0][1].cget('text')
+    g02 = gameMatrix[0][2].cget('text')
+    g10 = gameMatrix[1][0].cget('text')
+    g11 = gameMatrix[1][1].cget('text')
+    g12 = gameMatrix[1][2].cget('text')
+    g20 = gameMatrix[2][0].cget('text')
+    g21 = gameMatrix[2][1].cget('text')
+    g22 = gameMatrix[2][2].cget('text')
+
+    # Check rows
+    if g00 == g01 == g02 and g00 != " ": return True
+    if g10 == g11 == g12 and g10 != " ": return True
+    if g20 == g21 == g22 and g20 != " ": return True
+    # Check columns
+    if g00 == g10 == g20 and g00 != " ": return True
+    if g01 == g11 == g21 and g01 != " ": return True
+    if g02 == g12 == g22 and g02 != " ": return True
+    # Check diagonals
+    if g00 == g11 == g22 and g00 != " ": return True
+    if g02 == g11 == g20 and g02 != " ": return True
+
+    return False
+
+
+def restart ():
+    global currentTurn
+    restart = "X"
+    
+    whosTurn.config(text="Turn for - X ")
+    for r in range(3):
+        for c in range(3):
+            gameMatrix[r][c].config(text=" ",state= "normal")
+
+
+def makeMove(r,c):
+    global currentTurn
+
+    if (gameMatrix[r][c].cget('text') == " "):
+        gameMatrix[r][c].config(text=currentTurn)
+        
+        if checkWin():
+            whosTurn.config(text=f"{currentTurn} Wins !!!")
+            return
+
+    if currentTurn=="X":
+        currentTurn="O"
+    else:
+        currentTurn="X"
+    
+
+def makeButton (r,c):
+
+    button = tk.Button(root,text=" ",padx=30,pady=30,command = lambda r=r,c=c: makeMove(r,c) )
+    button.grid(row=r,column=c)
+    return button
+    
+
+root = tk.Tk()
+root.title("Tic Tac Toe")
+
+gameMatrix =[
+    [makeButton(0,0),makeButton(0,1),makeButton(0,2)],
+    [makeButton(1,0),makeButton(1,1),makeButton(1,2)],
+    [makeButton(2,0),makeButton(2,1),makeButton(2,2)]
+]
+
+currentTurn="X"
+
+whosTurn = tk.Label(root,text=f"Turn for - X",font=60)
+whosTurn.grid(row=3,column=0,padx=30,pady=30,columnspan=3)
+
+restartButton = tk.Button(root,text="Restart",padx=25,pady=25,command = restart)
+restartButton.grid(row=4,column=0,columnspan=3)
+
+root.mainloop()
